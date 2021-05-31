@@ -1,4 +1,5 @@
 require_relative 'handler'
+require_relative 'timeformatter'
 
 class Application
   def call(env)
@@ -10,7 +11,7 @@ class Application
   private
 
   def response(status, text)
-    [status, {'Content-Type' => 'text/plain'}, [text]]
+    Rack::Response.new(status, text).finish
   end
 
   def time_response
