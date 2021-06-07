@@ -1,3 +1,6 @@
-require_relative 'application'
+require 'rack'
+require_relative 'time_app'
 
-run Application.new
+use Rack::Reloader, 0
+
+run TimeApp.new

@@ -1,28 +1,43 @@
+require 'time'
+
 class TimeFormatter
-  TIME_FORMATS = {
-    'year' => '%Y/',
-    'month' => '%m/',
-    'day' => '%d',
-    'hour' => '%H:',
-    'minute' => '%M:',
-    'second' => '%S'
-  }
+  VALUES = {
+    year:   '%Y',
+    month:  '%m',
+    day:    '%d',
+    hour:   '%H',
+    minute: '%M',
+    second: '%S'
+  }.freeze
 
-  def initialize(params)
-    @response = set_time_format(params)
-    @correct_format = ''
-    @incorrect_formats = []
+  def initialize(csv)
+    @csv   = csv
+    @right = []
+    @wrong = []
   end
 
-  private
+  def call
+    values = @csv.split(',').map(&:to_sym)
 
-  def show_incorrect_formats
-    @status = 400
-    "Incorrect time format #{@incorrect_formats}"
+    values.each do |value|
+      if VALUES[value]
+        @right << VALUES[value]
+      else
+        @wrong << value
+      end
+    end
   end
 
-  def show_time
-    @status = 200
-    Time.current.strftime(@correct_formats)
+  def right?
+    @wrong.empty?
+  end
+
+  def format
+    str = @right.join('-')
+    Time.now.strftime(str)
+  end
+
+  def wrong
+    @wrong.join(', ')
   end
 end
